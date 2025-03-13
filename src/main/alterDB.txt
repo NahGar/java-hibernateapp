@@ -1,0 +1,11 @@
+CREATE TABLE `java_curso`.`clientes` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NULL,
+  `apellido` VARCHAR(45) NULL,
+  `forma_pago` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));
+
+  INSERT INTO `java_curso`.`clientes` (`nombre`, `apellido`, `forma_pago`) VALUES ('Andrés', 'Rodríguez', 'debito');
+  INSERT INTO `java_curso`.`clientes` (`nombre`, `apellido`, `forma_pago`) VALUES ('Micaela', 'Nieves', 'credito');
+  INSERT INTO `java_curso`.`clientes` (`nombre`, `apellido`, `forma_pago`) VALUES ('Evan', 'García', 'paypal');
+  INSERT INTO `java_curso`.`clientes` (`nombre`, `apellido`, `forma_pago`) VALUES ('Gael', 'García', 'debito');

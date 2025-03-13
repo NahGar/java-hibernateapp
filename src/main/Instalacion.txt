@@ -1,0 +1,2 @@
+1. Hay que crear la carpeta META-INF en la carpeta resources
+2. Dentro hay que crear el archivo persistence.xml con las configuraciones
