@@ -24,6 +24,8 @@ public class HibernatePorId {
         System.out.println(c1);
 
         //Metodo 2
+        //Find guarda resultado en la sesión, si hago un
+        //segundo find por el mismo id no va a la BD
         Cliente c2 = em.find(Cliente.class, id);
         System.out.println(c2);
 
