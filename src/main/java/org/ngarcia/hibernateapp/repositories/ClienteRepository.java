@@ -15,7 +15,7 @@ public class ClienteRepository implements CrudRepository<Cliente>{
 
    @Override
    public List<Cliente> listar() {
-      return em.createQuery("Select c from Cliente c", Cliente.class).getResultList();;
+      return em.createQuery("Select c from Cliente c", Cliente.class).getResultList();
    }
 
    @Override
