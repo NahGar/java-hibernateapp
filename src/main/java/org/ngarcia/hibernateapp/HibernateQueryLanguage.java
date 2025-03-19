@@ -5,6 +5,7 @@ import org.ngarcia.hibernateapp.dominio.ClienteDto;
 import org.ngarcia.hibernateapp.entity.Cliente;
 import org.ngarcia.hibernateapp.util.JpaUtil;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class HibernateQueryLanguage {
@@ -74,8 +75,67 @@ public class HibernateQueryLanguage {
         nombres.forEach(System.out::println);
 
         System.out.println("--- consulta buscar por nomnre ----");
-        clientes = em.createQuery("Select c from Cliente c where c.nombre like :parametro", Cliente.class)
-                        .setParameter("parametro","%Gae%").getResultList();
+        clientes = em.createQuery("Select c from Cliente c where upper(c.nombre) like :parametro", Cliente.class)
+                        .setParameter("parametro","%GA%").getResultList();
+        clientes.forEach(System.out::println);
+
+        System.out.println("--- consulta por rango ----");
+        //clientes = em.createQuery("Select c from Cliente c where c.id between 2 and 4", Cliente.class).getResultList();
+        //en este caso busca E y F, porque G no se incluye
+        clientes = em.createQuery("Select c from Cliente c where c.nombre between 'E' and 'G'", Cliente.class).getResultList();
+        clientes.forEach(System.out::println);
+
+        System.out.println("--- consulta con orden ----");
+        clientes = em.createQuery("Select c from Cliente c order by c.formaPago asc, c.nombre desc", Cliente.class).getResultList();
+        clientes.forEach(System.out::println);
+
+        System.out.println("--- consulta total de registros ----");
+        Long total = em.createQuery("Select count(c) from Cliente c", Long.class).getSingleResult();
+        System.out.println("Total registros: "+ total);
+
+        System.out.println("--- consulta con valor mínimo ----");
+        Long minimo = em.createQuery("Select min(c.id) from Cliente c", Long.class).getSingleResult();
+        System.out.println("Id mínimo: "+ minimo);
+
+        System.out.println("--- consulta con valor máximo ----");
+        Long maximo = em.createQuery("Select max(c.id) from Cliente c", Long.class).getSingleResult();
+        System.out.println("Id máximo: "+ maximo);
+
+        System.out.println("--- consulta nombre y largo ----");
+        registros = em.createQuery("Select c.nombre, length(c.nombre) from Cliente c", Object[].class).getResultList();
+        registros.forEach( registro -> {
+            System.out.println(registro[0]+" ("+registro[1]+")");
+        });
+
+        System.out.println("--- consulta con el nombre más corto ----");
+        Integer minLargo = em.createQuery("Select min(length(c.nombre)) from Cliente c", Integer.class).getSingleResult();
+        System.out.println("nombre más largo: "+ minLargo);
+
+        System.out.println("--- consulta con el nombre más largo ----");
+        Integer maxLargo = em.createQuery("Select max(length(c.nombre)) from Cliente c", Integer.class).getSingleResult();
+        System.out.println("nombre más largo: "+ maxLargo);
+
+        System.out.println("--- consulta funciones agregacion ----");
+        Object[] stats = em.createQuery("Select min(c.id), max(c.id), sum(c.id), avg(c.id), count(c) from Cliente c", Object[].class).getSingleResult();
+        System.out.println("min: "+stats[0]+" max: "+stats[1]+" sum: "+stats[2]+" avg: "+stats[3]+" count: "+stats[4]);
+
+        System.out.println("--- consulta con subconsulta, nombre más largo ----");
+        String sql = "Select c.nombre, length(c.nombre) from Cliente c where length(c.nombre) = " +
+                "(Select max(length(c.nombre)) from Cliente c)";
+        registros = em.createQuery(sql, Object[].class).getResultList();
+        registros.forEach( registro -> {
+            System.out.println(registro[0]+" ("+registro[1]+")");
+        });
+
+        System.out.println("--- consulta con subconsulta, ultimo registro ----");
+        sql = "Select c from Cliente c where c.id = (Select max(c.id) from Cliente c)";
+        cliente = em.createQuery(sql, Cliente.class).getSingleResult();
+        System.out.println(cliente);
+
+        System.out.println("--- consulta con where in ----");
+        sql = "Select c from Cliente c where c.id in :ids";
+        clientes = em.createQuery(sql, Cliente.class)
+                .setParameter("ids", Arrays.asList(1L,2L,50L)).getResultList();
         clientes.forEach(System.out::println);
 
         em.close();
