@@ -101,6 +101,44 @@ public class HibernateCriteria {
       clientes = em.createQuery(query).getResultList();
       clientes.forEach(System.out::println);
 
+      System.out.println("---- consulta por id ----");
+      query = criteria.createQuery(Cliente.class);
+      from = query.from(Cliente.class);
+      ParameterExpression<Long> idParam = criteria.parameter(Long.class,"id");
+      query.select(from).where(criteria.equal(from.get("id"), idParam));
+      Cliente cliente = em.createQuery(query).setParameter("id",1L).getSingleResult();
+      System.out.println(cliente);
+
+      System.out.println("--- consulta el nombre de los clientes ---");
+      CriteriaQuery<String> queryString = criteria.createQuery(String.class);
+      from = queryString.from(Cliente.class);
+      queryString.select(from.get("nombre"));
+      List<String> nombres = em.createQuery(queryString).getResultList();
+      nombres.forEach(System.out::println);
+
+      System.out.println("--- consulta de formas de pago con distinct ---");
+      queryString = criteria.createQuery(String.class);
+      from = queryString.from(Cliente.class);
+      queryString.select(criteria.lower(from.get("formaPago"))).distinct(true);
+      nombres = em.createQuery(queryString).getResultList();
+      nombres.forEach(System.out::println);
+
+      System.out.println("--- consulta de nombre y apellido concatenados ---");
+      queryString = criteria.createQuery(String.class);
+      from = queryString.from(Cliente.class);
+      queryString.select(criteria.concat( criteria.concat(from.get("nombre")," "), from.get("apellido")));
+      nombres = em.createQuery(queryString).getResultList();
+      nombres.forEach(System.out::println);
+
+      System.out.println("--- consulta de lista de campos ---");
+      CriteriaQuery<Object[]> queryObject = criteria.createQuery(Object[].class);
+      from = queryObject.from(Cliente.class);
+      queryObject.multiselect(from.get("id"), from.get("nombre"));
+      List<Object[]> registros = em.createQuery(queryObject).getResultList();
+      registros.forEach( req -> {
+         System.out.println(req[0]+" "+req[1]);
+      });
+
 
       em.close();
    }
