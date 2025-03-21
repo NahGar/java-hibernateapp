@@ -135,10 +135,33 @@ public class HibernateCriteria {
       from = queryObject.from(Cliente.class);
       queryObject.multiselect(from.get("id"), from.get("nombre"));
       List<Object[]> registros = em.createQuery(queryObject).getResultList();
-      registros.forEach( req -> {
-         System.out.println(req[0]+" "+req[1]);
+      registros.forEach( reg -> {
+         System.out.println(reg[0]+" "+reg[1]);
       });
 
+      System.out.println("--- contar registros ---");
+      CriteriaQuery<Long> queryLong = criteria.createQuery(Long.class);
+      from = queryLong.from(Cliente.class);
+      queryLong.select(criteria.count(from.get("id")));
+      Long count = em.createQuery(queryLong).getSingleResult();
+      System.out.println("cant reg: " + count);
+
+      System.out.println("--- sumar registros ---");
+      queryLong = criteria.createQuery(Long.class);
+      from = queryLong.from(Cliente.class);
+      queryLong.select(criteria.sum(from.get("id")));
+      Long sum = em.createQuery(queryLong).getSingleResult();
+      System.out.println("suma reg: " + sum);
+
+      System.out.println("--- varios funciones ---");
+      queryObject = criteria.createQuery(Object[].class);
+      from = queryObject.from(Cliente.class);
+      queryObject.multiselect( criteria.count(from.get("id")),
+              criteria.sum(from.get("id")),
+              criteria.max(from.get("id")),
+              criteria.min(from.get("id")));
+      Object[] registro = em.createQuery(queryObject).getSingleResult();
+      System.out.println("count: " + registro[0]+ " sum: "+registro[1]+ " max: "+registro[2]+ " min: "+registro[3]);
 
       em.close();
    }
