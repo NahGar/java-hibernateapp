@@ -9,3 +9,7 @@ CREATE TABLE `java_curso`.`clientes` (
   INSERT INTO `java_curso`.`clientes` (`nombre`, `apellido`, `forma_pago`) VALUES ('Micaela', 'Nieves', 'credito');
   INSERT INTO `java_curso`.`clientes` (`nombre`, `apellido`, `forma_pago`) VALUES ('Evan', 'García', 'paypal');
   INSERT INTO `java_curso`.`clientes` (`nombre`, `apellido`, `forma_pago`) VALUES ('Gael', 'García', 'debito');
+
+  ALTER TABLE `java_curso`.`clientes`
+  ADD COLUMN `creado_en` DATETIME NULL DEFAULT NULL AFTER `forma_pago`,
+  ADD COLUMN `editado_en` DATETIME NULL DEFAULT NULL AFTER `creado_en`;

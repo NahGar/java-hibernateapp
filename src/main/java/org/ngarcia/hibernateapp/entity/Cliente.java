@@ -2,6 +2,8 @@ package org.ngarcia.hibernateapp.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name="clientes")
 public class Cliente {
@@ -15,6 +17,9 @@ public class Cliente {
 
     @Column(name="forma_pago")
     private String formaPago;
+
+    @Embedded
+    private Auditoria auditoria = new Auditoria();
 
     //JPA requiere un constructor vacío si existe un constructor con parámetros
     public Cliente() {
@@ -66,9 +71,13 @@ public class Cliente {
 
     @Override
     public String toString() {
+        LocalDateTime creadoEn = this.auditoria != null ? this.auditoria.getCreadoEn(): null;
+        LocalDateTime editadoEn = this.auditoria != null ? this.auditoria.getEditadoEn(): null;
         return "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +
-                ", formaPago='" + formaPago + '\'';
+                ", formaPago='" + formaPago + '\'' +
+                ", creado en='" + creadoEn + '\'' +
+                ", editado en='" + editadoEn + '\'';
     }
 }

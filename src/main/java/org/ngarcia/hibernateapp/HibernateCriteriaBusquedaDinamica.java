@@ -43,5 +43,11 @@ public class HibernateCriteriaBusquedaDinamica {
 
       query.select(from).where(cb.and(condiciones.toArray(new Predicate[condiciones.size()])));
 
+      List<Cliente> clientes = em.createQuery(query).getResultList();
+      clientes.forEach(System.out::println);
+
+
+      em.close();
+
    }
 }
